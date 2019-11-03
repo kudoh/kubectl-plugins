@@ -6,5 +6,5 @@
 
 ```bash
 cd kubectl-plugins/revisions
-go build . -o kubectl revisions
+go build . -o kubectl-revisions
 ```
