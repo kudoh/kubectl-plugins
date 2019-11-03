@@ -33,7 +33,8 @@ func main() {
 	flag.Parse()
 
 	if deployName == "" {
-		panic(fmt.Errorf("Deployment name(-d) Required"))
+		fmt.Println("Deployment name(-d) Required")
+		os.Exit(1)
 	}
 	if namespace == "" {
 		ns, _, err := clientcmd.NewNonInteractiveDeferredLoadingClientConfig(
