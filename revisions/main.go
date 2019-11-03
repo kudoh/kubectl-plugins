@@ -6,6 +6,8 @@ import (
 	"os"
 	"path/filepath"
 
+	"k8s.io/apimachinery/pkg/api/errors"
+
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
@@ -59,7 +61,10 @@ func main() {
 	}
 
 	latest, err := clientset.AppsV1().Deployments(namespace).Get(deployName, metav1.GetOptions{})
-	if err != nil {
+	if errors.IsNotFound(err) {
+		fmt.Printf("%s not found in %s\n", deployName, namespace)
+		return
+	} else if err != nil {
 		panic(err.Error())
 	}
 
@@ -72,7 +77,7 @@ func main() {
 		allRSs = append(allRSs, newRS)
 	}
 	if len(allRSs) == 0 {
-		fmt.Printf("[%s] No ReplicaSet found", deployName)
+		fmt.Printf("[%s] No ReplicaSet found\n", deployName)
 		return
 	}
 
