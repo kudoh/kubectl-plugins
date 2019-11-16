@@ -15,8 +15,6 @@ import (
 	"k8s.io/kubectl/pkg/util/deployment"
 )
 
-const revisionKey = "deployment.kubernetes.io/revision"
-
 var (
 	kubeconfig string
 	deployName string
