@@ -14,12 +14,13 @@ func readNumFromStdIn(max int) (int, error) {
 		n, err := strconv.ParseUint(s.Text(), 10, 32)
 		if err != nil {
 			fmt.Printf("[%s] is illegal format. enter number > ", s.Text())
-			if int(n) > max {
-				fmt.Printf("[%d] is unknown number. enter number > ", n)
-			}
 		} else {
-			fmt.Println("You selected: ", n)
-			return int(n), nil
+			if n == 0 || int(n) > max {
+				fmt.Printf("[%d] is unknown number. enter number > ", n)
+			} else {
+				fmt.Println("You selected: ", n)
+				return int(n), nil
+			}
 		}
 	}
 	if err := s.Err(); err != nil {
