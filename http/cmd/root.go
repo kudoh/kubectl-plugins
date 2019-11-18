@@ -125,6 +125,8 @@ func callHttp() error {
 	restClient := &http.Client{
 		Timeout: 10 * time.Second,
 		Transport: &http.Transport{
+			Proxy:             http.ProxyFromEnvironment,
+			DisableKeepAlives: true,
 			TLSClientConfig: &tls.Config{
 				InsecureSkipVerify: *req.skipHttpsVerify,
 			},
