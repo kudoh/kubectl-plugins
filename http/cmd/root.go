@@ -23,7 +23,7 @@ type cmdFlags struct {
 	repeat          *bool
 	skipHttpsVerify *bool
 	*genericclioptions.ConfigFlags
-	*genericclioptions.ResourceBuilderFlags
+	//	*genericclioptions.ResourceBuilderFlags
 }
 
 var (
@@ -58,15 +58,15 @@ func init() {
 	req = cmdFlags{
 		ingress:         rootCmd.PersistentFlags().StringP("ingress", "i", "", "Ingress name"),
 		https:           rootCmd.PersistentFlags().Bool("https", false, "use https"),
-		skipHttpsVerify: rootCmd.PersistentFlags().Bool("skipVerify", false, "skip https verify"),
+		skipHttpsVerify: rootCmd.PersistentFlags().BoolP("skip-ingress-https-verify", "k", false, "skip https verify"),
 		repeat:          rootCmd.PersistentFlags().BoolP("repeat", "r", false, "if true, calling request repeatedly"),
 	}
 	req.ConfigFlags = genericclioptions.NewConfigFlags(false)
-	req.ResourceBuilderFlags = genericclioptions.NewResourceBuilderFlags()
+	//req.ResourceBuilderFlags = genericclioptions.NewResourceBuilderFlags()
 
 	flags.AddFlagSet(rootCmd.PersistentFlags())
 	req.ConfigFlags.AddFlags(flags)
-	req.ResourceBuilderFlags.AddFlags(flags)
+	//req.ResourceBuilderFlags.AddFlags(flags)
 }
 
 func Execute() error {
@@ -139,7 +139,6 @@ func test() error {
 			case ".json":
 				contentType = "application/json"
 			case ".xml":
-				fmt.Println("XML!")
 				contentType = "application/xml"
 			case ".txt":
 				contentType = "text/plain"
@@ -171,10 +170,6 @@ func test() error {
 
 func getIngress(ls *v1beta12.IngressList) (*v1beta12.Ingress, error) {
 
-	if len(ls.Items) == 1 {
-		return &ls.Items[0], nil
-	}
-
 	if *req.ingress != "" {
 		for _, ing := range ls.Items {
 			if *req.ingress == ing.Name {
@@ -182,6 +177,10 @@ func getIngress(ls *v1beta12.IngressList) (*v1beta12.Ingress, error) {
 			}
 		}
 		return nil, fmt.Errorf("ingress not found")
+	}
+
+	if len(ls.Items) == 1 {
+		return &ls.Items[0], nil
 	}
 
 	for i, ing := range ls.Items {
